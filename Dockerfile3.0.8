@@ -1,0 +1,16 @@
+FROM ubuntu:23.04 as builder 
+
+RUN apt-get update && apt-get install -y curl make libtext-template-perl gcc
+
+WORKDIR /openssl
+RUN curl -O https://www.openssl.org/source/openssl-3.0.8.tar.gz && tar -zxvf openssl-3.0.8.tar.gz
+
+WORKDIR /openssl/openssl-3.0.8
+RUN ./config && make -j8 && make install
+
+FROM ubuntu:23.04
+
+COPY --from=builder /usr/local /usr/local
+RUN ldconfig
+
+ENTRYPOINT [ "openssl" ]
