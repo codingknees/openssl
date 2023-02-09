@@ -11,6 +11,6 @@ RUN ./config && make -j8 && make install
 FROM ubuntu:23.04
 
 COPY --from=builder /usr/local /usr/local
-RUN ldconfig
+RUN echo '/usr/local/lib64' >> /etc/ld.so.conf.d/libc.conf && ldconfig
 
 ENTRYPOINT [ "openssl" ]
